@@ -1,23 +1,26 @@
 package org.iesra
 
 import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 class Parseador {
+
+    private val formateador = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
 
     private val regex = Regex(
         """\[(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2})] (INFO|WARNING|ERROR) (.+)"""
     )
 
     fun parse(line: String): EntradaLog? {
-        val match = regex.find(line) ?: return null
+        val resultado = regex.find(line) ?: return null
 
         return try {
-            val (dateStr, levelStr, message) = match.destructured
+            val (fechaStr, levelStr, mensaje) = resultado.destructured
 
             EntradaLog(
-                timestamp = LocalDateTime.parse(dateStr.replace(" ", "T")), //Se usa T por el formato ISO
+                timestamp = LocalDateTime.parse(fechaStr, formateador),
                 level = LogLevel.valueOf(levelStr),
-                message = message
+                mensaje = mensaje
             )
         } catch (e: Exception) {
             null

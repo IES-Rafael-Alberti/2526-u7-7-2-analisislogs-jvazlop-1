@@ -5,5 +5,5 @@ import java.time.LocalDateTime
 data class EntradaLog(
     val timestamp: LocalDateTime,
     val level: LogLevel,
-    val message: String
+    val mensaje: String
 )

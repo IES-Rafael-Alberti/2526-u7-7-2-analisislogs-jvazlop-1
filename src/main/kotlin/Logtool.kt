@@ -79,6 +79,10 @@ class LogTool : CliktCommand() {
             if (log != null) {
                 logsValidos.add(log)
             } else {
+                if (!ignoreInvalid) {
+                    echo("Error: Línea mal formada encontrada. Use --ignore-invalid para omitirla.")
+                    return
+                }
                 invalidas++
             }
         }
@@ -98,40 +102,50 @@ class LogTool : CliktCommand() {
         val ultima = logsFiltrados.maxByOrNull { it.timestamp }?.timestamp
 
         val statsTexto = """
-            ESTADISTICAS DE LOGS
-            ====================
-            Fichero: $input
+ESTADISTICAS DE LOGS
+====================
+Fichero: $input
 
-            Total lineas: ${lineas.size}
-            Lineas validas: ${logsFiltrados.size}
-            Lineas invalidas: $invalidas
+Total lineas: ${lineas.size}
+Lineas validas: ${logsFiltrados.size}
+Lineas invalidas: $invalidas
 
-            INFO: $info
-            WARNINGS: $warning
-            ERRORS: $error
+INFO: $info
+WARNINGS: $warning
+ERRORS: $error
 
-            Primera fecha: ${primera?.format(formatter)}
-            Ultima fecha: ${ultima?.format(formatter)}
-        """.trimIndent()
+Primera fecha: ${primera?.format(formatter) ?: ""}
+Ultima fecha: ${ultima?.format(formatter) ?: ""}""".trimIndent()
 
         val logsTexto = logsFiltrados.joinToString("\n") {
-            "[${it.timestamp.format(formatter)}] ${it.level} ${it.message}"
+            "[${it.timestamp.format(formatter)}] ${it.level} ${it.mensaje}"
         }
 
         val reportTexto = """
-            INFORME DE LOGS
-            ===============
+INFORME DE LOGS
+===============
 
-            $statsTexto
+$statsTexto
 
-            Entradas:
-            $logsTexto
-        """.trimIndent()
+Entradas:
+$logsTexto""".trimIndent()
 
-        val salida = if (stats) statsTexto else reportTexto
+        val finalStats = stats
+        val finalReport = report || (!stats && !report)
 
-        output?.let {
-            File(it).writeText(salida)
+        val salida = if (finalStats) statsTexto else reportTexto
+
+        try {
+            output?.let {
+                File(it).writeText(salida)
+            }
+        } catch (e: Exception) {
+            echo("Error: No se pudo escribir en el fichero de salida.")
+            return
+        }
+
+        if (stdout) {
+            echo(salida)
         }
     }
 }
