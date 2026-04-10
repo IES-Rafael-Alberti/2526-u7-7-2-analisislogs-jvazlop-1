@@ -15,7 +15,7 @@ class Parseador {
             val (dateStr, levelStr, message) = match.destructured
 
             EntradaLog(
-                timestamp = LocalDateTime.parse(dateStr.replace(" ", "T")),
+                timestamp = LocalDateTime.parse(dateStr.replace(" ", "T")), //Se usa T por el formato ISO
                 level = LogLevel.valueOf(levelStr),
                 message = message
             )
