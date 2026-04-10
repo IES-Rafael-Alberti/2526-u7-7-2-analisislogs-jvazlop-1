@@ -1,3 +1,4 @@
+[![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-22041afd0340ce965d47ae6ef1cefeee28c7c493a6346c4f15d667ab976d596c.svg)](https://classroom.github.com/a/omBieXIU)
 # Versión en castellano
 
 ## Ejercicio: Procesador de Logs
@@ -239,6 +240,135 @@ Este ejercicio es bastante más rico de lo que parece a primera vista. Permite t
 Vamos, que parece pequeño, pero viene bien cargado de “cosas de verdad”.
 
 ---
+---
+
+## Diferencia entre `--stats` y `--report`
+
+El programa deberá permitir dos modos principales de salida: `--stats` y `--report`.
+
+### Opción `--stats`
+
+Cuando el usuario ejecute el programa con la opción `--stats`, la salida deberá mostrar **únicamente información estadística resumida** sobre el log procesado, sin incluir el detalle de las entradas individuales.
+
+Como mínimo, esta salida deberá incluir:
+
+* el nombre del fichero analizado,
+* los filtros aplicados, en caso de existir,
+* el número total de líneas procesadas,
+* el número de líneas válidas e inválidas,
+* el número de entradas de tipo `INFO`,
+* el número de entradas de tipo `WARNING`,
+* el número de entradas de tipo `ERROR`,
+* la primera y la última fecha encontradas en el conjunto de datos filtrado.
+
+Por tanto, `--stats` ofrece una visión global del contenido del log, centrada en el resumen numérico de la información.
+
+### Ejemplo de llamada con `--stats`
+
+```bash id="qf1aa1"
+logtool -i sample_app.log -p --stats
+```
+
+### Ejemplo de salida de `--stats`
+
+```text id="adnn7d"
+ESTADÍSTICAS DE LOGS
+====================
+Fichero analizado: sample_app.log
+Rango aplicado: sin filtro
+Niveles incluidos: INFO, WARNING, ERROR
+
+Resumen:
+- Líneas procesadas: 82
+- Líneas válidas: 82
+- Líneas inválidas: 0
+
+Conteo por nivel:
+- INFO: 58
+- WARNING: 14
+- ERROR: 10
+
+Periodo detectado:
+- Primera entrada: 2025-01-15 08:00:00
+- Última entrada: 2025-01-17 18:42:11
+```
+
+---
+
+### Opción `--report`
+
+Cuando el usuario ejecute el programa con la opción `--report`, la salida deberá mostrar un **informe completo**.
+
+Este informe deberá incluir:
+
+1. toda la información estadística que se mostraría con `--stats`,
+2. y además el **detalle de las entradas del log** resultantes tras aplicar los filtros indicados.
+
+Por tanto, `--report` no solo resume la información, sino que también muestra las líneas concretas que forman parte del resultado.
+
+### Ejemplo de llamada con `--report`
+
+```bash id="5myl16"
+logtool -i sample_app.log -p --report
+```
+
+### Ejemplo de salida de `--report`
+
+```text id="fdv2nq"
+INFORME DE LOGS
+===============
+Fichero analizado: sample_app.log
+Rango aplicado: sin filtro
+Niveles incluidos: INFO, WARNING, ERROR
+
+Resumen:
+- Líneas procesadas: 82
+- Líneas válidas: 82
+- Líneas inválidas: 0
+
+Conteo por nivel:
+- INFO: 58
+- WARNING: 14
+- ERROR: 10
+
+Periodo detectado:
+- Primera entrada: 2025-01-15 08:00:00
+- Última entrada: 2025-01-17 18:42:11
+
+Entradas encontradas:
+[2025-01-15 08:00:00] INFO Aplicación iniciada
+[2025-01-15 08:00:03] INFO Cargando configuración
+[2025-01-15 08:00:05] WARNING Archivo de configuración secundario no encontrado
+[2025-01-15 08:00:10] ERROR Error de conexión a base de datos
+[2025-01-15 08:00:15] INFO Reintentando conexión
+[2025-01-15 08:00:20] INFO Conexión restaurada
+...
+```
+
+---
+
+### Regla de uso
+
+Las opciones `--stats` y `--report` son excluyentes. El usuario deberá indicar solo una de ellas en cada ejecución. Si se proporcionan ambas a la vez, el programa deberá informar del error de uso correspondiente.
+
+---
+
+### Ejemplos adicionales con filtros
+
+#### Estadísticas para un rango de fechas
+
+```bash id="yad9s6"
+logtool -i sample_app.log -f "2025-01-16 00:00:00" -t "2025-01-16 23:59:59" -p --stats
+```
+
+#### Informe completo filtrando solo errores y warnings
+
+```bash id="t7c4w8"
+logtool -i sample_app.log -l ERROR,WARNING -p --report
+```
+
+---
+---
 
 # English version
 
@@ -402,4 +532,3 @@ This exercise is useful to practice:
 * command-line argument processing.
 
 It looks simple, but it is actually a very complete command-line programming task.
-

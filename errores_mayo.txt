@@ -1,0 +1,26 @@
+INFORME DE LOGS
+===============
+
+ESTADISTICAS DE LOGS
+====================
+Fichero: sample_app.log
+
+Total lineas: 82
+Lineas validas: 7
+Lineas invalidas: 0
+
+INFO: 0
+WARNINGS: 0
+ERRORS: 7
+
+Primera fecha: 2025-01-15 08:02:07
+Ultima fecha: 2025-01-17 08:20:14
+
+Entradas:
+[2025-01-15 08:02:07] ERROR Error de conexión a BD
+[2025-01-15 08:10:35] ERROR No se pudo escribir el fichero de informe
+[2025-01-15 09:00:55] ERROR Fallo en copia de seguridad incremental
+[2025-01-16 08:05:18] ERROR Token JWT inválido
+[2025-01-16 09:00:21] ERROR No se pudo renombrar el fichero de log activo
+[2025-01-17 08:05:02] ERROR Timeout al invocar servicio externo de facturación
+[2025-01-17 08:20:14] ERROR No se pudo conectar con servidor SMTP secundario
