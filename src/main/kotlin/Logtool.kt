@@ -8,6 +8,10 @@ import java.time.format.DateTimeFormatter
 
 class LogTool : CliktCommand() {
 
+    private val output: String? by option("-o", "--output")
+
+    private val ignoreInvalid: Boolean by option("--ignore-invalid").flag(default = false)
+
     private val input: String by option("-i", "--input").required()
 
     private val stdout: Boolean by option("-p", "--stdout").flag(default = false)
@@ -31,8 +35,8 @@ class LogTool : CliktCommand() {
             return
         }
 
-        if (!stdout) {
-            echo("Debes indicar --stdout")
+        if (!stdout && output == null) {
+            echo("Debes indicar --stdout o --output")
             return
         }
 
@@ -58,7 +62,7 @@ class LogTool : CliktCommand() {
         }
 
         val levelFilter = try {
-            level?.let { LogLevel.valueOf(it.uppercase()) }
+            level?.split(",")?.map { LogLevel.valueOf(it.trim().uppercase()) }
         } catch (e: Exception) {
             echo("Nivel invalido")
             return
@@ -80,7 +84,7 @@ class LogTool : CliktCommand() {
         }
 
         val logsFiltrados = logsValidos.filter { log ->
-            val cumpleLevel = levelFilter?.let { log.level == it } ?: true
+            val cumpleLevel = levelFilter?.let { log.level in it } ?: true
             val cumpleFrom = fromDate?.let { log.timestamp >= it } ?: true
             val cumpleTo = toDate?.let { log.timestamp <= it } ?: true
             cumpleLevel && cumpleFrom && cumpleTo
@@ -126,8 +130,8 @@ class LogTool : CliktCommand() {
 
         val salida = if (stats) statsTexto else reportTexto
 
-        if (stdout) {
-            echo(salida)
+        output?.let {
+            File(it).writeText(salida)
         }
     }
 }
